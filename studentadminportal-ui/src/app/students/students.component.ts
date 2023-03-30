@@ -14,8 +14,10 @@ export class StudentsComponent implements OnInit {
 
   //Student property, that imports a list from the UI model
   students: Student[] = [];
+
   //Defining the displayedColumns to display the listed properties( it is displayed in order)
-  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email', 'mobile', 'gender'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'dateOfBirth', 'email', 'mobile', 'gender', 'edit'];
+  
   //Creating a public property, dataSource which is the list is our data source, defined in Angular Material
   //dataSource property is initialized with MatTableDataSource class provided by Angular Material, of type list of student
   dataSource: MatTableDataSource<Student> = new MatTableDataSource<Student>();
@@ -44,7 +46,7 @@ export class StudentsComponent implements OnInit {
       //DataSource is assigned here under success response
       //In this method we will assign the Paginator, which is a property of the Data Source
       //Slly assiging sorting in the method
-      this.studentService.getStudent()
+      this.studentService.getStudents()
       .subscribe(
         (successResponse) => {
           this.students = successResponse;

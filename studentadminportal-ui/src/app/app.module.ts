@@ -50,12 +50,14 @@ import { MatTableModule } from '@angular/material/table';
 import { TopNavComponent } from './layout/top-nav/top-nav.component';
 import { StudentsComponent } from './students/students.component';
 import { FormsModule } from '@angular/forms';
+import { ViewStudentComponent } from './students/view-student/view-student.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TopNavComponent,
-    StudentsComponent
+    StudentsComponent,
+    ViewStudentComponent
   ],
   imports: [
     BrowserModule,

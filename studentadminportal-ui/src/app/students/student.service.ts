@@ -23,7 +23,14 @@ export class StudentService {
 
   //We are fetching a list of students from API models> Student model
   //This becomes type safe
-  getStudent(): Observable<Student[]> {
+  getStudents(): Observable<Student[]> {
     return this.httpClient.get<Student[]>(this.baseApiUrl + '/students');
+  }
+
+  //This method returns a single student using HttpClient
+  //The data is fetched from the API models (Student interface)
+  //Passing studentId as the parameter and stirng as its type, which is Observable of type Student
+  getStudent(studentId: string): Observable<Student> {
+    return this.httpClient.get<Student>(this.baseApiUrl + '/students/' + studentId);
   }
 }
