@@ -1,5 +1,6 @@
+import { UpdateStudentRequest } from './../models/api-models/update-student-request.model';
 import { Student } from './../models/api-models/student.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -13,6 +14,7 @@ export class StudentService {
   //We need to create a private variable that takes the url from the API with out the route(/Students)
   //We also need to import HttpClient to make Http Calls
   private baseApiUrl= 'https://localhost:7145';
+
 
   //So we can initiate the service by passing it as the argument in the constructor
   constructor(private httpClient: HttpClient) { }
@@ -32,5 +34,22 @@ export class StudentService {
   //Passing studentId as the parameter and stirng as its type, which is Observable of type Student
   getStudent(studentId: string): Observable<Student> {
     return this.httpClient.get<Student>(this.baseApiUrl + '/students/' + studentId);
+  }
+
+  //Method to update student details
+  updateStudent(studentId: string, studentRequest: Student): Observable<Student> {
+
+    const updateStudentRequest: UpdateStudentRequest = {
+      "firstName": studentRequest.firstName,
+      "lastName": studentRequest.lastName,
+      "dateOfBirth": studentRequest.dateOfBirth,
+      "email": studentRequest.email,
+      "mobile": studentRequest.mobile,
+      "genderId": studentRequest.genderId,
+      "physicalAddress": studentRequest.address.physicalAddress,
+      "postalAddress": studentRequest.address.postalAddress
+    }
+
+    return this.httpClient.put<Student>(this.baseApiUrl + '/students/' + studentId, updateStudentRequest);
   }
 }

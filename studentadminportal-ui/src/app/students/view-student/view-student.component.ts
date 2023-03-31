@@ -1,7 +1,11 @@
+import { GenderService } from './../../services/gender.service';
 import { StudentService } from './../student.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Student } from 'src/app/models/ui-models/student.model';
+import { Gender } from 'src/app/models/ui-models/gender.model';
+import { HttpHeaders } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-view-student',
@@ -39,10 +43,16 @@ export class ViewStudentComponent implements OnInit{
     }
   }
 
+  //Creating genderList that is taken from UI Models
+  genderList: Gender[] = [];
 
   //Read and Injecting studentService and Route in the constructor
-  constructor(private readonly studentService: StudentService, private readonly route: ActivatedRoute)
-  {}
+  //Injecting GenderService
+  //Injecting SnackBar for displaying update notification
+  constructor(private readonly studentService: StudentService,
+    private readonly route: ActivatedRoute,
+    private readonly genderService: GenderService,
+    private snackbar: MatSnackBar) {}
 
   //Fetch using id through paramMap by using Route
   //paramMap() is an observable of type PramMap, that has methods we can use to fetch Parameters
@@ -62,9 +72,39 @@ export class ViewStudentComponent implements OnInit{
             (successResponse) => {
               this.student= successResponse;
             }
-          )
+          );
+
+          this.genderService.getGenderList()
+          .subscribe(
+            (successResponse) => {
+              this.genderList = successResponse;
+            }
+          );
         }
       }
-    )
+    );
+  }
+
+  onUpdate(): void {
+
+    //After creating the updateStudent method in the Service, we now have to call the method in the Component
+    //Call the student service to update the student
+
+    this.studentService.updateStudent(this.student.id, this.student)
+    .subscribe(
+      (successResponse) => {
+        console.log(successResponse);
+        //Show notification using SnackBar
+        this.snackbar.open('Student Updated successfully', undefined, {
+          duration: 2000
+        });
+      },
+      (errorResponse) => {
+       //console.log(errorResponse);
+
+      }
+    );
+
+
   }
 }
