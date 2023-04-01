@@ -1,7 +1,7 @@
 import { GenderService } from './../../services/gender.service';
 import { StudentService } from './../student.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Student } from 'src/app/models/ui-models/student.model';
 import { Gender } from 'src/app/models/ui-models/gender.model';
 import { HttpHeaders } from '@angular/common/http';
@@ -49,10 +49,12 @@ export class ViewStudentComponent implements OnInit{
   //Read and Injecting studentService and Route in the constructor
   //Injecting GenderService
   //Injecting SnackBar for displaying update notification
+  //Injecting a router
   constructor(private readonly studentService: StudentService,
     private readonly route: ActivatedRoute,
     private readonly genderService: GenderService,
-    private snackbar: MatSnackBar) {}
+    private snackbar: MatSnackBar,
+    private router: Router) {}
 
   //Fetch using id through paramMap by using Route
   //paramMap() is an observable of type PramMap, that has methods we can use to fetch Parameters
@@ -106,5 +108,29 @@ export class ViewStudentComponent implements OnInit{
     );
 
 
+  }
+
+
+  onDelete(): void {
+    //Here we will call the service
+    this.studentService.deleteStudent(this.student.id)
+    .subscribe(
+      (successResponse) => {
+        //passing an undefined var because we have no action
+        this.snackbar.open('Student deleted successfully', undefined, {
+        duration: 2000
+        });
+
+        //adding a router to navigate to students url after the snackbar event
+        //setting a time out of 2 seconds so that navigation will occer 2 sec after the event
+        setTimeout(() => {
+          this.router.navigateByUrl('students');
+        }, 2000);
+      },
+
+      (errorResponse) => {
+        //Log
+      }
+    )
   }
 }

@@ -52,4 +52,11 @@ export class StudentService {
 
     return this.httpClient.put<Student>(this.baseApiUrl + '/students/' + studentId, updateStudentRequest);
   }
+
+  //Implementing delete method in Service.ts
+  //Here the type student is of API models
+  //The return type is an Observable of type Student
+  deleteStudent(studentId: string): Observable<Student> {
+    return this.httpClient.delete<Student>(this.baseApiUrl + '/students/' + studentId);
+  }
 }
