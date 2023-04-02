@@ -43,6 +43,11 @@ export class ViewStudentComponent implements OnInit{
     }
   }
 
+  //Defining a new var
+  isNewStudent = false;
+  //Defining a new var for Header so that it can be set to the new student functionality
+  header = '';
+
   //Creating genderList that is taken from UI Models
   genderList: Gender[] = [];
 
@@ -69,12 +74,28 @@ export class ViewStudentComponent implements OnInit{
         //We can subscribe our service to the subsrcibe() method
         //The student property is returned as a result of successResponse
         if (this.studentId) {
-          this.studentService.getStudent(this.studentId)
+
+          //Checking if the route contains the keyword "Add"
+          //It will be our new Student Functionality
+
+          if(this.studentId.toLowerCase() === 'Add'.toLowerCase()) {
+            this.isNewStudent = true;
+            this.header = 'Add New Student';
+          }
+
+          //Otherwise
+          //Existing Students
+          else {
+            this.isNewStudent = false;
+            this.header = 'Edit Students';
+
+            this.studentService.getStudent(this.studentId)
           .subscribe(
             (successResponse) => {
               this.student= successResponse;
             }
           );
+          }
 
           this.genderService.getGenderList()
           .subscribe(
@@ -131,6 +152,30 @@ export class ViewStudentComponent implements OnInit{
       (errorResponse) => {
         //Log
       }
-    )
+    );
   }
+
+  // onAdd Method is implemented here
+  onAdd(): void {
+    this.studentService.addStudent(this.student)
+    .subscribe(
+      (successResponse) => {
+        //Show notification using SnackBar
+        this.snackbar.open('Student Added successfully', undefined, {
+          duration: 2000
+        });
+
+        //adding a router to navigate to students url after the snackbar event
+        //setting a time out of 2 seconds so that navigation will occer 2 sec after the event
+        setTimeout(() => {
+          this.router.navigateByUrl('students/${successResponse.id}');
+        }, 2000);
+
+      },
+      (errorResponse) => {
+        //Log
+      }
+    );
+  }
+
 }

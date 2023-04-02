@@ -3,6 +3,7 @@ import { Student } from './../models/api-models/student.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AddStudentRequest } from '../models/api-models/add-student-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,27 @@ export class StudentService {
   //The return type is an Observable of type Student
   deleteStudent(studentId: string): Observable<Student> {
     return this.httpClient.delete<Student>(this.baseApiUrl + '/students/' + studentId);
+  }
+
+  //Implementing addStudent method
+  //Here we define properties that addStudent method should be expecting
+  //This method returns an Observable of type Student
+  addStudent(studentRequest: Student): Observable<Student> {
+
+    const addStudentRequest: AddStudentRequest = {
+      "firstName": studentRequest.firstName,
+      "lastName": studentRequest.lastName,
+      "dateOfBirth": studentRequest.dateOfBirth,
+      "email": studentRequest.email,
+      "mobile": studentRequest.mobile,
+      "genderId": studentRequest.genderId,
+      "physicalAddress": studentRequest.address.physicalAddress,
+      "postalAddress": studentRequest.address.postalAddress
+    };
+
+    //Using httpClient to make calls to the API and perform POST operation
+    //Student type comes from the API Models
+    return this.httpClient.post<Student>(this.baseApiUrl + '/students/add', addStudentRequest);
+
   }
 }
