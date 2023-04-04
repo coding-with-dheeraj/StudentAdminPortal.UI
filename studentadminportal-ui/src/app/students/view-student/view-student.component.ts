@@ -48,6 +48,9 @@ export class ViewStudentComponent implements OnInit{
   //Defining a new var for Header so that it can be set to the new student functionality
   header = '';
 
+  //Defining a string var for ImageUrl
+  displayProfileImageUrl = '';
+
   //Creating genderList that is taken from UI Models
   genderList: Gender[] = [];
 
@@ -81,6 +84,9 @@ export class ViewStudentComponent implements OnInit{
           if(this.studentId.toLowerCase() === 'Add'.toLowerCase()) {
             this.isNewStudent = true;
             this.header = 'Add New Student';
+
+            //We want a new student to have a default image
+            this.setImage();
           }
 
           //Otherwise
@@ -93,7 +99,12 @@ export class ViewStudentComponent implements OnInit{
           .subscribe(
             (successResponse) => {
               this.student= successResponse;
+              this.setImage();
+            },
+            (errorResponse) => {
+              this.setImage();
             }
+
           );
           }
 
@@ -176,6 +187,51 @@ export class ViewStudentComponent implements OnInit{
         //Log
       }
     );
+  }
+
+  //Upload image method implemented here
+  uploadImage(event: any): void {
+    //Checking if student id exists
+    if(this.studentId) {
+      const file: File = event.target.files[0];
+      this.studentService.uploadImage(this.student.id, file)
+      .subscribe (
+        (successResponse) => {
+          this.student.profileImageUrl = successResponse;
+          this.setImage();
+
+        //Show notification using SnackBar
+        this.snackbar.open('Profile Image Updated', undefined, {
+          duration: 2000
+        });
+
+
+        },
+        (errorResponse) => {
+
+        }
+      )
+
+    }
+  }
+
+
+  //setImage is implemented here
+  private setImage(): void {
+    //Checking if student has a profile image
+
+    if(this.student.profileImageUrl) {
+      //If image exists, fetch the image by URL, using getImagePath that returns the complete path
+      this.displayProfileImageUrl = this.studentService.getImagePath(this.student.profileImageUrl);
+
+    }
+
+
+    else {
+      //If no image is available, display a default
+      //The default image saved under assets, its path is provided here
+      this.displayProfileImageUrl = '/assets/user.png';
+    }
   }
 
 }

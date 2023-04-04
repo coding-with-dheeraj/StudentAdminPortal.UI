@@ -82,4 +82,27 @@ export class StudentService {
     return this.httpClient.post<Student>(this.baseApiUrl + '/students/add', addStudentRequest);
 
   }
+
+  //Here uploadImage method is implemented
+  //Parameter name expected here is "profileImage" because that same parameter is passed in our Controller API
+  //The image can then be passed as a File BLOB(Binary Large Object)
+  //The return statement perfroms the POST operation by passing parameters, firstly the url, and then the body
+  //We will use a Form Data here
+  //Since the response is of type TEXT and not JSON, so we have to explicitly mention the the retrun type as text.
+  uploadImage(studentId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append("profileImage", file);
+
+    return this.httpClient.post(this.baseApiUrl + '/students/' + studentId + '/upload-image',
+      formData, {
+        responseType: 'text'
+      }
+    );
+
+  }
+
+  //
+  getImagePath(relativePath: string) {
+    return `${this.baseApiUrl}/${relativePath}`;
+  }
 }
